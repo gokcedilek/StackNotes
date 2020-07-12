@@ -6,9 +6,9 @@ document.addEventListener('copy', (e) => {
   chrome.runtime.sendMessage({ message: 'copy', text: selection }, function (
     response
   ) {
-    console.log('copied!');
+    console.log(response);
+    updateClipboard(response.text);
   });
-  updateClipboard('hello1!!!!');
 });
 
 updateClipboard = (text) => {
