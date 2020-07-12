@@ -2,9 +2,9 @@
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log('hello');
   if (request.message === 'copy') {
-    //alert('copied!');
-    console.log(request);
-    console.log(sender);
+    // chrome.storage.sync.set({ color: '#3aa757' }, function () {
+    //   console.log('The color is green.');
+    // });
     sendResponse({});
     //do smth with the sender tab as well: sender.tab
     //save the sender to the storage along with the copied thing!

@@ -2,17 +2,33 @@
 console.log('content script!');
 
 document.addEventListener('copy', (e) => {
-  //alert('copy detected!');
-  //send a message to bg
-  console.log('hi!!');
-  const selection = document.getSelection();
-  console.log(selection.toString());
-  chrome.runtime.sendMessage({ message: 'copy' }, function (response) {
+  const selection = document.getSelection().toString();
+  chrome.runtime.sendMessage({ message: 'copy', text: selection }, function (
+    response
+  ) {
     console.log('copied!');
   });
+  updateClipboard('hello1!!!!');
 });
 
+updateClipboard = (text) => {
+  navigator.permissions.query({ name: 'clipboard-write' }).then((result) => {
+    if (result.state == 'granted' || result.state == 'prompt') {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          console.log('Text copied to clipboard');
+        })
+        .catch((err) => {
+          // This can happen if the user denies clipboard permissions:
+          console.error('Could not copy text: ', err);
+        });
+    }
+  });
+};
+
 document.addEventListener('paste', function (e) {
-  alert('paste detected!');
-  //send a message to bg
+  console.log(e);
+  console.log(e.clipboardData.getData('text'));
+  //send a message to bg to once again updateClipboard()
 });

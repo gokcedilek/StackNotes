@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "StackNotes",
   "version": "1",
-  "permissions": ["clipboardRead", "clipboardWrite"],
+  "permissions": ["storage"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
