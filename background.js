@@ -1,13 +1,16 @@
-//import Stack.js please!
+import { CopyPasteStack } from './Stack.js'; //for import to work, needs to declared as a module in bg.html
+
+let cpStack;
 
 chrome.runtime.onInstalled.addListener(function () {
-  //initialize the stack: cpStack
+  cpStack = new CopyPasteStack();
+  console.log(cpStack.data);
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.message === 'copy') {
     //put to stack
-    //cpStack.push(request.text);
+    cpStack.push(request.text);
     //store the stack
     // chrome.storage.sync.set({ stackNotes: cpStack }, function () {
     //   console.log('Updated stackNotes!');
