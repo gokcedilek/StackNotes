@@ -6,7 +6,6 @@ document.addEventListener('copy', (e) => {
   chrome.runtime.sendMessage({ message: 'copy', text: selection }, function (
     response
   ) {
-    console.log(response);
     updateClipboard(response.text);
   });
 });
@@ -17,7 +16,7 @@ updateClipboard = (text) => {
       navigator.clipboard
         .writeText(text)
         .then(() => {
-          console.log('Text copied to clipboard');
+          console.log('Copied to clipboard: ', text);
         })
         .catch((err) => {
           // This can happen if the user denies clipboard permissions:
@@ -27,8 +26,27 @@ updateClipboard = (text) => {
   });
 };
 
+readClipboard = () => {
+  navigator.permissions.query({ name: 'clipboard-read' }).then((result) => {
+    if (result.state == 'granted' || result.state == 'prompt') {
+      navigator.clipboard
+        .readText()
+        .then((text) => {
+          console.log('Read from the clipboard: ', text);
+          return text;
+        })
+        .catch((err) => {
+          console.error('Could not read text: ', err);
+        });
+    }
+  });
+};
+
 document.addEventListener('paste', function (e) {
-  console.log(e);
-  console.log(e.clipboardData.getData('text'));
-  //send a message to bg to once again updateClipboard()
+  const paste = readClipboard();
+  console.log('paste is: ', paste);
+  //if(paste) then sendMessage?
+  chrome.runtime.sendMessage({ message: 'paste' }, function (response) {
+    updateClipboard(response.text);
+  });
 });
