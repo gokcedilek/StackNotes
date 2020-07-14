@@ -4,6 +4,13 @@ let cpStack;
 
 chrome.runtime.onInstalled.addListener(function () {
   cpStack = new CopyPasteStack();
+
+  //tabs (in all windows) need to be refreshed for the c/p logic to work
+  chrome.tabs.query({}, function (tabs) {
+    tabs.forEach(function (tab) {
+      chrome.tabs.reload(tab.id);
+    });
+  });
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
