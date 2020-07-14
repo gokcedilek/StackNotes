@@ -2,6 +2,7 @@
 console.log('content script!');
 
 document.addEventListener('copy', (e) => {
+  console.log('in copy!');
   const selection = document.getSelection().toString();
   chrome.runtime.sendMessage({ message: 'copy', text: selection }, function (
     response
@@ -19,7 +20,6 @@ updateClipboard = (text) => {
           console.log('Copied to clipboard: ', text);
         })
         .catch((err) => {
-          // This can happen if the user denies clipboard permissions:
           console.error('Could not copy text: ', err);
         });
     }
@@ -33,7 +33,10 @@ readClipboard = () => {
         .readText()
         .then((text) => {
           console.log('Read from the clipboard: ', text);
-          return text;
+          //note that we should update the clipboard only AFTER we read from the clipboard - this problems happens as the tab asks for user confirmation to use the clipboard
+          chrome.runtime.sendMessage({ message: 'paste' }, function (response) {
+            updateClipboard(response.text);
+          });
         })
         .catch((err) => {
           console.error('Could not read text: ', err);
@@ -43,10 +46,6 @@ readClipboard = () => {
 };
 
 document.addEventListener('paste', function (e) {
-  const paste = readClipboard();
-  console.log('paste is: ', paste);
-  //if(paste) then sendMessage?
-  chrome.runtime.sendMessage({ message: 'paste' }, function (response) {
-    updateClipboard(response.text);
-  });
+  console.log('in paste!');
+  readClipboard();
 });
